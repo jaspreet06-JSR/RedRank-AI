@@ -1,5 +1,5 @@
 import json
-
+import pandas as pd
 from src.load_job import load_job_description
 from src.feature_engineering import build_candidate_text
 from src.semantic_match import semantic_score
@@ -83,6 +83,20 @@ results.sort(
     key=lambda x: x["score"],
     reverse=True
 )
+submission = pd.DataFrame(results)
+
+submission = submission[
+    [
+        "candidate_id",
+        "score"
+    ]
+]
+
+submission.to_csv(
+    "outputs/submission.csv",
+    index=False
+)
+
 for candidate in results[:5]:
     print(candidate["candidate_id"],
           "|",

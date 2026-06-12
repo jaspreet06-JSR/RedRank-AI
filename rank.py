@@ -67,13 +67,12 @@ with open(
 
         results.append({
             "candidate_id": candidate["candidate_id"],
+            "semantic": round(semantic, 4),
+            "retrieval": round(retrieval, 4),
+            "experience": round(experience, 4),
+            "behavior": round(behavior, 4),
             "title": candidate["profile"]["current_title"],
-            "years": candidate["profile"].get("years_of_experience", 0),
-            "score": round(score, 4),
-            "retrieval": round(retrieval, 2),
-            "explanation": explanation,
-            "behavior": round(behavior, 2),
-            "title": round(title, 2)
+            "score": round(score, 4)
         })
 
         if i == 999:
@@ -88,6 +87,10 @@ submission = pd.DataFrame(results)
 submission = submission[
     [
         "candidate_id",
+        "semantic",
+        "retrieval",
+        "experience",
+        "behavior",
         "score"
     ]
 ]

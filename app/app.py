@@ -60,7 +60,7 @@ if os.path.exists("outputs/submission.csv"):
     # Dashboard Metrics
     # -----------------------------
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
         st.metric(
@@ -86,6 +86,24 @@ if os.path.exists("outputs/submission.csv"):
             len(df[df["score"] > 0.60])
         )
 
+    with col5:
+        st.metric(
+            "Best Candidate",
+           df.iloc[0]["candidate_id"]
+        )    
+
+        st.info(
+            f"""
+            Processed {len(df)} candidates
+
+            🏆 Best Score: {df['score'].max():.4f}
+
+            📈 Average Score: {df['score'].mean():.4f}
+
+            ✅ Qualified Candidates: {len(df[df['score'] > 0.60])}
+            """
+        )
+
     # -----------------------------
     # Top Candidates
     # -----------------------------
@@ -103,6 +121,41 @@ if os.path.exists("outputs/submission.csv"):
     st.bar_chart(
         top10.set_index("candidate_id")["score"]
     )
+
+    st.subheader("📊 Score Distribution")
+
+    hist_data = (
+        df["score"]
+        .round(1)
+        .value_counts()
+        .sort_index()
+    )
+
+    st.subheader("🎯 Hiring Funnel")
+
+    funnel_df = pd.DataFrame({
+        "Stage": [
+            "All Candidates",
+            "Relevant",
+            "Strong",
+            "Qualified",
+            "Top Talent"
+        ],
+        "Count": [
+            len(df),
+            len(df[df["score"] > 0.40]),
+            len(df[df["score"] > 0.50]),
+            len(df[df["score"] > 0.60]),
+            10
+        ]
+    })
+
+    st.dataframe(
+        funnel_df,
+        use_container_width=True
+    )
+
+    st.bar_chart(hist_data)
 
     st.subheader("🏆 Top Candidates")
 
@@ -143,6 +196,27 @@ if os.path.exists("outputs/submission.csv"):
         data=df.to_csv(index=False),
         file_name="submission.csv",
         mime="text/csv"
+    )
+
+    st.subheader("📈 Ranking Factor Analysis")
+
+    factor_df = pd.DataFrame({
+        "Factor": [
+            "Semantic",
+            "Retrieval",
+            "Experience",
+            "Behavior"
+        ],
+        "Average": [
+            df["semantic"].mean(),
+            df["retrieval"].mean(),
+            df["experience"].mean(),
+            df["behavior"].mean()
+        ]
+    })
+
+    st.bar_chart(
+        factor_df.set_index("Factor")
     )
 
     st.divider()

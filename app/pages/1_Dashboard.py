@@ -57,12 +57,6 @@ if uploaded_jd is not None:
         """
         )
 
-    else:
-
-        st.warning(
-            "PDF and DOCX support will be added later. Please upload a TXT file for now."
-        )
-
 if st.button("🚀 Rank Candidates"):
 
     if uploaded_jd is not None:

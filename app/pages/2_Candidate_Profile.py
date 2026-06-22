@@ -48,7 +48,15 @@ df = pd.read_csv(
     "outputs/submission.csv"
 )
 
-candidate_ids = df[
+qualified_df = (
+    df.sort_values(
+        "score",
+        ascending=False
+    )
+    .head(50)
+)
+
+candidate_ids = qualified_df[
     "candidate_id"
 ].tolist()
 
@@ -77,15 +85,15 @@ candidate = get_candidate(
     selected_candidate
 )
 
-selected_row = df[
-    df["candidate_id"]
+selected_row = qualified_df[
+    qualified_df["candidate_id"]
     ==
     selected_candidate
 ].iloc[0]
 
 rank_position = (
-    df.index[
-        df["candidate_id"]
+    qualified_df.index[
+        qualified_df["candidate_id"]
         ==
         selected_candidate
     ][0]
